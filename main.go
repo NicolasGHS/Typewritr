@@ -5,8 +5,8 @@ import (
 	"os"
 
 
-	tea "github.com/charmbracelet/bubbletea"
 	"https://github.com/NicolasGHS/Typewritr/tui/model"
+	tea "github.com/charmbracelet/bubbletea"
 
 )
 

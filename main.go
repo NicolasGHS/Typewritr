@@ -4,14 +4,20 @@ import (
 	"fmt"
 	"os"
 
+
 	tea "github.com/charmbracelet/bubbletea"
+	"https://github.com/NicolasGHS/Typewritr/tui/model"
 
 )
+
 
 type model struct {
     words    []string           
     cursor   int                
 }
+
+
+// TODO: make model + view folder and divide functions
 
 func main() {
 	p := tea.NewProgram(initialModel())

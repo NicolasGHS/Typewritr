@@ -11,6 +11,7 @@ import (
 type model struct {
 	words []string
 	// cursor int
+	typed string
 }
 
 // TODO: make model + view folder and divide functions
@@ -41,6 +42,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		// These keys should exit the program.
 		case "ctrl+c", "q":
 			return m, tea.Quit
+		default:
+			// typed key to the typed string
+			m.typed += msg.String()
 		}
 	}
 	return m, nil
@@ -54,6 +58,7 @@ func (m model) View() string {
 	}
 
 	s += "\nPress q to quit.\n"
+	s += fmt.Sprintf("\nYou typed: %s\n", m.typed)
 
 	return s
 }

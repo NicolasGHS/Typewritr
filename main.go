@@ -6,6 +6,7 @@ import (
 
 	// "https://github.com/NicolasGHS/Typewritr/tui/model"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 type model struct {
@@ -58,7 +59,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	s := "Typewritr\n"
+	var style = lipgloss.NewStyle().
+	Bold(true).
+	Foreground(lipgloss.Color("#FAFAFA")).
+	Width(18)
+
+	header := style.Render("Typewritr\n")
+	s := header + "\n"
+
 
 	for _, word := range m.words {
 		s += fmt.Sprintf("%s ", word)
@@ -75,6 +83,7 @@ func (m model) View() string {
 	}
 
 	// s += fmt.Sprintf("\nChar: %c\n", char)
+
 
 	return s
 }

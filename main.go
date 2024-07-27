@@ -67,6 +67,9 @@ func (m model) View() string {
 	currentLetterStyle := lipgloss.NewStyle().
 		Bold(true).
 		Foreground(lipgloss.Color("#e78284")) 
+	
+	afterCursorStyle := lipgloss.NewStyle().
+		Foreground(lipgloss.Color("#737994"))
 
 	header := headerStyle.Render("Typewritr\n")
 	s := header + "\n"
@@ -78,21 +81,13 @@ func (m model) View() string {
 		currentLetter := currentWord[m.cursor : m.cursor+1]
 		afterCursor := currentWord[m.cursor+1:]
 
-		s += fmt.Sprintf("%s%s%s", beforeCursor, currentLetterStyle.Render(currentLetter), afterCursor)
-	} else {
-		s += m.words[0]
-	}
-
-	s += "\nPress q to quit.\n"
-	s += fmt.Sprintf("\nYou typed: %s\n", m.typed)
-
-	if m.cursor < len(m.words[0]) {
-		currentWord := m.words[0]
-		s += fmt.Sprintf("\nNext letter to type: %c\n", currentWord[m.cursor])
+		s += fmt.Sprintf("%s%s%s", beforeCursor, currentLetterStyle.Render(currentLetter), afterCursorStyle.Render(afterCursor))
 	} else {
 		s += "\nYou've typed the word correctly!\n"
 	}
 
+	s += "\nPress q to quit.\n"
+	
 
 	return s
 }

@@ -4,8 +4,16 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-func DocStyle() lipgloss.Style {
+var (
+	HeaderStyle = lipgloss.NewStyle().
+		Bold(true).
+		Foreground(lipgloss.Color("#FAFAFA")).
+		Width(18)
 
-	return lipgloss.NewStyle().
-		Padding(1, 2, 1, 2)
-}
+	CurrentLetterStyle = lipgloss.NewStyle().
+		Bold(true).
+		Foreground(lipgloss.Color("#e78284"))
+
+	AfterCursorStyle = lipgloss.NewStyle().
+		Foreground(lipgloss.Color("#737994"))
+)

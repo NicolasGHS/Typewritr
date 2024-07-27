@@ -59,17 +59,28 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	var style = lipgloss.NewStyle().
-	Bold(true).
-	Foreground(lipgloss.Color("#FAFAFA")).
-	Width(18)
+	headerStyle := lipgloss.NewStyle().
+		Bold(true).
+		Foreground(lipgloss.Color("#FAFAFA")).
+		Width(18)
 
-	header := style.Render("Typewritr\n")
+	currentLetterStyle := lipgloss.NewStyle().
+		Bold(true).
+		Foreground(lipgloss.Color("#e78284")) 
+
+	header := headerStyle.Render("Typewritr\n")
 	s := header + "\n"
 
 
-	for _, word := range m.words {
-		s += fmt.Sprintf("%s ", word)
+	if m.cursor < len(m.words[0]) {
+		currentWord := m.words[0]
+		beforeCursor := currentWord[:m.cursor]
+		currentLetter := currentWord[m.cursor : m.cursor+1]
+		afterCursor := currentWord[m.cursor+1:]
+
+		s += fmt.Sprintf("%s%s%s", beforeCursor, currentLetterStyle.Render(currentLetter), afterCursor)
+	} else {
+		s += m.words[0]
 	}
 
 	s += "\nPress q to quit.\n"
@@ -81,8 +92,6 @@ func (m model) View() string {
 	} else {
 		s += "\nYou've typed the word correctly!\n"
 	}
-
-	// s += fmt.Sprintf("\nChar: %c\n", char)
 
 
 	return s

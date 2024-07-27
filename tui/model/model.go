@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/charmbracelet/bubbletea"
 	"github.com/NicolasGHS/Typewritr/tui/style"
@@ -12,18 +13,27 @@ type model struct {
 	cursor    int
 	typed     string
 	wordIndex int
+	timer time.Duration
+	
 }
 
 func InitialModel() model {
 	return model{
 		words:  []string{"Test", "Hello", "World"},
 		cursor: 0,
+		timer: 10 * time.Second,
 	}
 }
 
+func tick() tea.Msg {
+	time.Sleep(1 * time.Second)
+	return tickMsg{}
+}
+
+type tickMsg struct{}
+
 func (m model) Init() tea.Cmd {
-	// Just return `nil`, which means "no I/O right now, please."
-	return nil
+	return tick 
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -49,6 +59,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 			}
 		}
+	case tickMsg:
+		m.timer -= 1 * time.Second
+		if m.timer <= 0 {
+			return m, tea.Quit
+		}
+		return m, tick
 	}
 	return m, nil
 }
@@ -60,6 +76,8 @@ func (m model) View() string {
 
 	header := headerStyle.Render("Typewritr\n")
 	s := header + "\n"
+
+	s += fmt.Sprintf("Timer: %v\n", m.timer)
 
 
 	if len(m.words) == 0 {

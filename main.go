@@ -9,9 +9,9 @@ import (
 )
 
 type model struct {
-	words []string
-	// cursor int
-	typed string
+	words  []string
+	cursor int
+	typed  string
 }
 
 // TODO: make model + view folder and divide functions
@@ -26,7 +26,8 @@ func main() {
 
 func initialModel() model {
 	return model{
-		words: []string{"Test", "Hello", "World"},
+		words:  []string{"Test", "Hello", "World"},
+		cursor: 0,
 	}
 }
 
@@ -44,7 +45,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		default:
 			// typed key to the typed string
-			m.typed += msg.String()
+			if m.cursor < len(m.words[0]) {
+				currentWord := m.words[0]
+				if msg.String() == string(currentWord[m.cursor]) {
+					m.typed += msg.String()
+					m.cursor++
+				}
+			}
 		}
 	}
 	return m, nil
@@ -59,6 +66,15 @@ func (m model) View() string {
 
 	s += "\nPress q to quit.\n"
 	s += fmt.Sprintf("\nYou typed: %s\n", m.typed)
+
+	if m.cursor < len(m.words[0]) {
+		currentWord := m.words[0]
+		s += fmt.Sprintf("\nNext letter to type: %c\n", currentWord[m.cursor])
+	} else {
+		s += "\nYou've typed the word correctly!\n"
+	}
+
+	// s += fmt.Sprintf("\nChar: %c\n", char)
 
 	return s
 }

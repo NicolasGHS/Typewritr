@@ -13,6 +13,7 @@ type model struct {
 	words  []string
 	cursor int
 	typed  string
+	wordIndex int
 }
 
 // TODO: make model + view folder and divide functions
@@ -46,11 +47,17 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		default:
 			// typed key to the typed string
-			if m.cursor < len(m.words[0]) {
-				currentWord := m.words[0]
-				if msg.String() == string(currentWord[m.cursor]) {
-					m.typed += msg.String()
-					m.cursor++
+			currentWord := m.words[m.wordIndex]
+			if m.cursor < len(currentWord) && msg.String() == string(currentWord[m.cursor]) {
+				m.typed += msg.String()
+				m.cursor++
+				if m.cursor == len(currentWord) {
+					m.cursor = 0
+					m.wordIndex++
+					if m.wordIndex >= len(m.words) {
+						m.words = []string{}
+						m.typed = ""
+					}	
 				}
 			}
 		}
@@ -75,17 +82,24 @@ func (m model) View() string {
 	s := header + "\n"
 
 
-	if m.cursor < len(m.words[0]) {
-		currentWord := m.words[0]
-		beforeCursor := currentWord[:m.cursor]
-		currentLetter := currentWord[m.cursor : m.cursor+1]
-		afterCursor := currentWord[m.cursor+1:]
-
-		s += fmt.Sprintf("%s%s%s", beforeCursor, currentLetterStyle.Render(currentLetter), afterCursorStyle.Render(afterCursor))
+	if len(m.words) == 0 {
+		s += "\nCongratulations! You've typed all the words correctly!\n"
 	} else {
-		s += "\nYou've typed the word correctly!\n"
+		for i, word := range m.words {
+			if i < m.wordIndex {
+				s += word + " "
+			} else if i == m.wordIndex {
+				beforeCursor := word[:m.cursor]
+				currentLetter := word[m.cursor : m.cursor+1]
+				afterCursor := word[m.cursor+1:]
+				s += fmt.Sprintf("%s%s%s ", beforeCursor, currentLetterStyle.Render(currentLetter), afterCursorStyle.Render(afterCursor))
+			} else {
+				s += afterCursorStyle.Render(word) + " "
+			}
+		}
 	}
 
+	
 	s += "\nPress q to quit.\n"
 	
 
